@@ -38,11 +38,12 @@ public class steps {
 	@Before
 	public void setup() // Junit hook - executes once before starting
 	{
+		
 		// for logging
-		logger = LogManager.getLogger(this.getClass());
-		// Reading config.properties (for browser)
-		rb = ResourceBundle.getBundle("config");
-		br = rb.getString("browser");
+		logger = LogManager.getLogger(this.getClass());	
+		rb=ResourceBundle.getBundle("config");
+	    br=rb.getString("browser");
+	    logger.info("br");
 
 	}
 
