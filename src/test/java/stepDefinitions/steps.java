@@ -22,6 +22,7 @@ import io.cucumber.java.en.*;
 import pageObjects.HomePage;
 import pageObjects.LoginPage;
 import pageObjects.MyAccountPage;
+import utilities.DataReader;
 
 public class steps {
 	WebDriver driver;
@@ -44,14 +45,14 @@ public class steps {
 		rb=ResourceBundle.getBundle("config");
 	    br=rb.getString("browser");
 	    logger.info("br");
-
+	    macc=new MyAccountPage(driver);
 	}
 
 	@After
 	public void tearDown(Scenario scenario) {
 		System.out.println("Scenario status ---->" + scenario.getStatus());
 		if (scenario.isFailed()) {
-			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+		   	byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
 			scenario.attach(screenshot, "image/png", scenario.getName());
 		}
 		driver.quit();
@@ -107,7 +108,7 @@ public class steps {
 
 	@Then("User navigates to MyAccount Page")
 	public void user_navigates_to_my_account_page() {
-		macc = new MyAccountPage(driver);
+		//macc = new MyAccountPage(driver);
 		boolean targetpage = macc.isMyAccountPageExists();
 
 		if (targetpage) {
@@ -118,5 +119,74 @@ public class steps {
 			Assert.assertTrue(false);
 		}
 	}
+	
+	 //*******   Data Driven test method    **************
+    @Then("check User navigates to MyAccount Page by passing Email and Password with excel row {string}")
+    public void check_user_navigates_to_my_account_page_by_passing_email_and_password_with_excel_data(String rows) throws InterruptedException
+    {
+        datamap=DataReader.data(System.getProperty("user.dir")+"\\testData\\Opencart_LoginData.xlsx", "Sheet1");
 
+        int index=Integer.parseInt(rows)-1;
+        String email= datamap.get(index).get("username");
+        String pwd= datamap.get(index).get("password");
+        String exp_res= datamap.get(index).get("res");
+
+        
+        
+        lp=new LoginPage(driver);
+        lp.setEmail(email);
+        lp.setPassword(pwd);
+       // Thread.sleep(3000);
+
+        lp.clickLogin();
+        try
+        {
+            boolean targetpage=macc.isMyAccountPageExists();
+
+            if(exp_res.equals("Valid"))
+            {	
+           
+                if(targetpage==true)
+                {
+                    MyAccountPage myaccpage=new MyAccountPage(driver);
+                    myaccpage.clickLogout();
+                    Assert.assertTrue(true);
+                }
+                else
+                {
+                    Assert.assertTrue(false);
+                }
+            }
+
+            if(exp_res.equals("Invalid"))
+            {	
+            	
+                if(targetpage==true)
+                {	
+                	
+                    macc.clickLogout();
+                    Assert.assertTrue(false);
+                }
+                else
+                {	
+                	
+                    Assert.assertTrue(true);
+                }
+            }
+
+
+        }
+        catch(Exception e)
+        {	
+        	
+        	//System.out.println(e.getMessage());
+        	//System.out.println(e.getStackTrace());
+        	
+            Assert.assertTrue(false);
+        }
+        driver.close();
+    }
+
+    //*******   Account Registration Methods    **************
+	
 }

@@ -7,15 +7,17 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
 
-        features= {".//Features//Login.feature"},
+        //features= {".//Features//Login.feature"},
+        //features= {".//Features/LoginDDT.feature"},
+        features= {".//Features/LoginDDTExcel.feature"},
         glue="stepDefinitions",
         plugin= {
         		"pretty", "html:reports/myreport.html", 
         		"json:reports/myreport.json"
         		},    //Mandatory to capture failures
-       // dryRun=false,
-        //monochrome=true,
-        tags = "@sanity"	//Scenarios tagged with @sanity,
+        dryRun=false,
+         monochrome=true
+        //tags = "@sanity"	//Scenarios tagged with @sanity,
       )
 public class TestRunner 
 {

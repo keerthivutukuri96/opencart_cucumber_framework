@@ -3,3 +3,7 @@ reports/*
 .classpath
 .project
 .settings
+target/test-classes/stepDefinitions/
+target/test-classes/testRunner/
+target/test-classes/utilities/
+*.class
