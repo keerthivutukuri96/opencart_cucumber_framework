@@ -6,4 +6,6 @@ reports/*
 target/test-classes/stepDefinitions/
 target/test-classes/testRunner/
 target/test-classes/utilities/
+target/maven-status/
+target/surefire-reports/
 *.class
